@@ -122,7 +122,7 @@ int main()
         int tile_cost_value = tile_cost.at(tile); // Correct way to access the cost
 
         // Print the position and the cost of the tile
-        cout << r << " " << c << endl;//" (Tile: " << tile << ", Cost: " << tile_cost_value << ")" << endl;
+        cout << r << " " << c << endl; //" (Tile: " << tile << ", Cost: " << tile_cost_value << ")" << endl;
     }
 
     return 0;
