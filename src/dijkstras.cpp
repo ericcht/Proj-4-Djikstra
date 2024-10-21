@@ -3,7 +3,6 @@
 #include <queue>
 #include <unordered_map>
 #include <climits>
-#include <vector>
 #include <algorithm>
 
 using namespace std;
@@ -55,6 +54,7 @@ pair<int, vector<pair<int, int>>> dijkstra(const vector<vector<char>> &map, cons
         }
     }
 
+    // Reconstruct the path
     vector<pair<int, int>> path;
     int r = end_row, c = end_col;
     while (r != -1 && c != -1)
@@ -122,7 +122,7 @@ int main()
         int tile_cost_value = tile_cost.at(tile); // Correct way to access the cost
 
         // Print the position and the cost of the tile
-        cout << r << " " << c << endl; //" (Tile: " << tile << ", Cost: " << tile_cost_value << ")" << endl;
+        cout << r << " " << c << endl; // "(Tile: " << tile << ", Cost: " << tile_cost_value << ")" << endl;
     }
 
     return 0;
