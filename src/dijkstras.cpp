@@ -22,6 +22,61 @@ pair<int, vector<pair<int, int>>> dijkstra(const vector<vector<char>> &map, cons
 
     dist[start_row][start_col] = 0;
     pq.push({0, start_row, start_col});
+
+    while (!pq.empty())
+    {
+        auto [current_cost, row, col] = pq.top();
+        pq.pop();
+
+        // Stop if we reach the destination
+        if (row == end_row && col == end_col)
+        {
+            break;
+        }
+
+        // Explore neighboring cells (up, down, left, right)
+        for (auto &dir : directions)
+        {
+            int new_row = row + dir[0], new_col = col + dir[1];
+
+            // Check if the new position is within bounds
+            if (new_row >= 0 && new_row < rows && new_col >= 0 && new_col < cols)
+            {
+                int new_cost = current_cost + tileCost.at(map[new_row][new_col]);
+
+                // If a shorter path to this cell is found
+                if (new_cost < dist[new_row][new_col])
+                {
+                    dist[new_row][new_col] = new_cost;
+                    previous[new_row][new_col] = {row, col};
+                    pq.push({new_cost, new_row, new_col});
+                }
+            }
+        }
+    }
+
+    vector<pair<int, int>> path;
+    int r = end_row, c = end_col;
+    while (r != -1 && c != -1)
+    {
+        path.push_back({r, c});
+        auto prev = previous[r][c];
+        r = prev.first;
+        c = prev.second;
+    }
+    reverse(path.begin(), path.end());
+
+    // Calculate total cost excluding the start cell, but adding (end_cost - start_cost)
+    int total_cost = dist[end_row][end_col];
+
+    // Get the cost for the start and end tiles
+    int start_cost = tileCost.at(map[start_row][start_col]);
+    int end_cost = tileCost.at(map[end_row][end_col]);
+
+    // Final adjustment: subtract the start cost and add the (end_cost - start_cost) difference
+    total_cost -= (end_cost - start_cost);
+
+    return {total_cost, path};
 }
 
 int main()
@@ -67,7 +122,7 @@ int main()
         int tile_cost_value = tile_cost.at(tile); // Correct way to access the cost
 
         // Print the position and the cost of the tile
-        cout << r << " " << c << " (Tile: " << tile << ", Cost: " << tile_cost_value << ")" << endl;
+        cout << r << " " << c << endl;//" (Tile: " << tile << ", Cost: " << tile_cost_value << ")" << endl;
     }
 
     return 0;
