@@ -10,7 +10,7 @@ using namespace std;
 pair<int, vector<pair<int, int>>> dijkstra(const vector<vector<char>> &map, const unordered_map<char, int> &tileCost,
                                            int rows, int cols, int start_row, int start_col, int end_row, int end_col)
 {
-    int directions[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // check all adjacent cells in map (left, right, up, down)
+    int directions[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // check all adjacent cells in map (up, down, left, right)
     vector<vector<int>> dist(rows, vector<int>(cols, INT_MAX));
 
     // Previous array to track the path (stores the previous cell)
@@ -19,8 +19,9 @@ pair<int, vector<pair<int, int>>> dijkstra(const vector<vector<char>> &map, cons
     // Using a tuple (cost, row, col)
     priority_queue<tuple<int, int, int>, vector<tuple<int, int, int>>, greater<tuple<int, int, int>>> pq;
 
-    dist[start_row][start_col] = 0;
-    pq.push({0, start_row, start_col});
+    // **Include the starting tile's cost**
+    dist[start_row][start_col] = tileCost.at(map[start_row][start_col]);
+    pq.push({dist[start_row][start_col], start_row, start_col});
 
     while (!pq.empty())
     {
@@ -33,6 +34,12 @@ pair<int, vector<pair<int, int>>> dijkstra(const vector<vector<char>> &map, cons
             break;
         }
 
+        // If we've already found a better path to this cell, skip it
+        if (current_cost > dist[row][col])
+        {
+            continue;
+        }
+
         // Explore neighboring cells (up, down, left, right)
         for (auto &dir : directions)
         {
@@ -41,7 +48,9 @@ pair<int, vector<pair<int, int>>> dijkstra(const vector<vector<char>> &map, cons
             // Check if the new position is within bounds
             if (new_row >= 0 && new_row < rows && new_col >= 0 && new_col < cols)
             {
-                int new_cost = current_cost + tileCost.at(map[new_row][new_col]);
+                // **Exclude the ending tile's cost**
+                int cost_to_add = (new_row == end_row && new_col == end_col) ? 0 : tileCost.at(map[new_row][new_col]);
+                int new_cost = current_cost + cost_to_add;
 
                 // If a shorter path to this cell is found
                 if (new_cost < dist[new_row][new_col])
@@ -66,15 +75,8 @@ pair<int, vector<pair<int, int>>> dijkstra(const vector<vector<char>> &map, cons
     }
     reverse(path.begin(), path.end());
 
-    // Calculate total cost excluding the start cell, but adding (end_cost - start_cost)
+    // The total cost is now correctly calculated without adjustments
     int total_cost = dist[end_row][end_col];
-
-    // Get the cost for the start and end tiles
-    int start_cost = tileCost.at(map[start_row][start_col]);
-    int end_cost = tileCost.at(map[end_row][end_col]);
-
-    // Final adjustment: subtract the start cost and add the (end_cost - start_cost) difference
-    total_cost -= (end_cost - start_cost);
 
     return {total_cost, path};
 }
@@ -118,11 +120,7 @@ int main()
     for (const auto &p : result.second)
     {
         int r = p.first, c = p.second;
-        char tile = map[r][c];                    // Get the tile character at the current position
-        int tile_cost_value = tile_cost.at(tile); // Correct way to access the cost
-
-        // Print the position and the cost of the tile
-        cout << r << " " << c << endl; // "(Tile: " << tile << ", Cost: " << tile_cost_value << ")" << endl;
+        cout << r << " " << c << endl;
     }
 
     return 0;
