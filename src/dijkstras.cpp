@@ -49,7 +49,15 @@ pair<int, vector<pair<int, int>>> dijkstra(const vector<vector<char>> &map, cons
             if (new_row >= 0 && new_row < rows && new_col >= 0 && new_col < cols)
             {
                 // **Exclude the ending tile's cost**
-                int cost_to_add = (new_row == end_row && new_col == end_col) ? 0 : tileCost.at(map[new_row][new_col]);
+                int cost_to_add;
+                if (new_row == end_row && new_col == end_col)
+                {
+                    cost_to_add = 0;
+                }
+                else
+                {
+                    cost_to_add = tileCost.at(map[new_row][new_col]);
+                }
                 int new_cost = current_cost + cost_to_add;
 
                 // If a shorter path to this cell is found
@@ -117,9 +125,10 @@ int main()
     cout << result.first << endl;
 
     // Output the path
-    for (const auto &p : result.second)
+    for (const auto &path : result.second)
     {
-        int r = p.first, c = p.second;
+        int r = path.first;
+        int c = path.second;
         cout << r << " " << c << endl;
     }
 
