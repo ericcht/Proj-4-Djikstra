@@ -6,6 +6,15 @@ finding on a 2D tile-based map.
 
 [Dijkstra's Algorithm]: https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
 
+| N    | Elapsed Time (seconds) | Memory Usage (MB) |
+|------|------------------------|-------------------|
+| 10   | 0.0224938               | 1.46              |
+| 20   | 0.00231933              | ...               |
+| 50   | 0.0144983               | ...               |
+| 100  | 0.0606514               | ...               |
+| 200  | 0.25838                 | ...               |
+| 500  | 1.7509                  | ...               |
+| 1000 | 7.45388                 | ...               |
 
 Input
 -----
